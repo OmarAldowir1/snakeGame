@@ -3,7 +3,8 @@ from pygame import Vector2
 
 pygame.init()  # pygame start
 
-#الو السلام عليكم كيف الحالasdasdasd
+#this is a git test for now
+#omar push test
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
