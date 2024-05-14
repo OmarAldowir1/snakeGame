@@ -79,7 +79,7 @@ class MAIN:
 cell_size = 40
 cell_number = 20
 screen = pygame.display.set_mode((cell_number * cell_size, cell_size * cell_number))  # window
-apple = pygame.image.load('/Users/YAMAN/Desktop/Graphics/apple-3155.png').convert_alpha()
+#apple = pygame.image.load('/Users/YAMAN/Desktop/Graphics/apple-3155.png').convert_alpha()
 clock = pygame.time.Clock()  # consist frames = 60
 main_game = MAIN()
 SCREEN_UPDATE = pygame.USEREVENT
