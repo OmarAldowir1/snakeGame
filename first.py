@@ -11,30 +11,49 @@ class SNAKE:
         self.direction = Vector2(1, 0)
         self.new_block = False
 
-        self.head__up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png'). convert_alpha()
-        self.head_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head4.png').convert_alpha()
-        self.head_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head2.png'). convert_alpha()
-        self.head_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head3.png'). convert_alpha()
+        self.head_up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headUp.png').convert_alpha()
+        self.head_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headDown1.png').convert_alpha()
+        self.head_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headRight.png').convert_alpha()
+        self.head_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headLeft.png').convert_alpha()
 
-        self.tail_up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.tail_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.tail_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.tail_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png'). convert_alpha()
+        self.head__up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headUp.png'). convert_alpha()
+        self.head_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headDown.png').convert_alpha()
+        self.head_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headRight.png'). convert_alpha()
+        self.head_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headLeft.png'). convert_alpha()
 
-        self.body_vertical = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.body_horizontal = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
+        self.tail_up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailUp.png').convert_alpha()
+        self.tail_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailDown.png').convert_alpha()
+        self.tail_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailRight.png').convert_alpha()
+        self.tail_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailLeft.png'). convert_alpha()
 
-        self.body_tr = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.body_tl = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.body_br = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
-        self.body_bl = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/head1.png').convert_alpha()
+        self.body_vertical = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/bodyVer.png').convert_alpha()
+        self.body_horizontal = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/bodyHor.png').convert_alpha()
+
+        self.body_tr = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner1.png').convert_alpha()
+        self.body_tl = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner2.png').convert_alpha()
+        self.body_br = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner3.png').convert_alpha()
+        self.body_bl = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner4.png').convert_alpha()
 
     def draw_snake(self):
-        for block in self.body:
+        for index, block in enumerate(self.body):
+            # 1. We still need a rect for the positioning
             x_pos = int(block.x * cell_size)
             y_pos = int(block.y * cell_size)
             block_rect = pygame.Rect(x_pos, y_pos, cell_size, cell_size)
-            pygame.draw.rect(screen, (183, 111, 122), block_rect)
+
+            # 2. Determine the correct head image based on direction
+            if index == 0:
+                if self.direction == Vector2(1, 0):
+                    screen.blit(self.head_right, block_rect)
+                elif self.direction == Vector2(-1, 0):
+                    screen.blit(self.head_left, block_rect)
+                elif self.direction == Vector2(0, 1):
+                    screen.blit(self.head_down, block_rect)
+                elif self.direction == Vector2(0, -1):
+                    screen.blit(self.head_up, block_rect)
+            else:
+                # pygame.draw.rect(screen, (150, 100, 100), block_rect)
+                pygame.draw.rect(screen, (74,95,168), block_rect)
 
     def move_snake(self):
         if self.new_block == True:
