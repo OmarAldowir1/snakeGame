@@ -3,9 +3,6 @@ from pygame import Vector2
 
 pygame.init()  # pygame start
 
-# This is a git test for now
-# Omar push test
-
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
@@ -35,7 +32,6 @@ class SNAKE:
         self.update_tail_graphics()
 
         for index, block in enumerate(self.body):
-            # 1. We still need a rect for the positioning
             x_pos = int(block.x * cell_size)
             y_pos = int(block.y * cell_size)
             block_rect = pygame.Rect(x_pos, y_pos, cell_size, cell_size)
@@ -52,11 +48,14 @@ class SNAKE:
                 elif previous_block.y == next_block.y:
                     screen.blit(self.body_horizontal, block_rect)
                 else:
-                    if (previous_block.x == -1 and next_block.y == -1) or (previous_block.y == -1 and next_block.x == -1):
+                    if (previous_block.x == -1 and next_block.y == -1) or (
+                            previous_block.y == -1 and next_block.x == -1):
                         screen.blit(self.body_tl, block_rect)
-                    elif (previous_block.x == -1 and next_block.y == 1) or (previous_block.y == 1 and next_block.x == -1):
+                    elif (previous_block.x == -1 and next_block.y == 1) or (
+                            previous_block.y == 1 and next_block.x == -1):
                         screen.blit(self.body_bl, block_rect)
-                    elif (previous_block.x == 1 and next_block.y == -1) or (previous_block.y == -1 and next_block.x == 1):
+                    elif (previous_block.x == 1 and next_block.y == -1) or (
+                            previous_block.y == -1 and next_block.x == 1):
                         screen.blit(self.body_tr, block_rect)
                     elif (previous_block.x == 1 and next_block.y == 1) or (previous_block.y == 1 and next_block.x == 1):
                         screen.blit(self.body_br, block_rect)
@@ -102,7 +101,6 @@ class FRUIT:
     def draw_fruit(self):
         fruit_rect = pygame.Rect(int(self.pos.x * cell_size), int(self.pos.y * cell_size), cell_size, cell_size)
         screen.blit(apple, fruit_rect)
-        # pygame.draw.rect(screen, (126, 166, 114), fruit_rect)
 
     def randomize(self):
         self.x = random.randint(0, cell_number - 1)  # rand places of the fruit
@@ -121,6 +119,7 @@ class MAIN:
         self.check_fail()  # calling a method that tells if the snake hit the wall
 
     def draw_elements(self):
+        self.draw_grass()
         self.fruit.draw_fruit()
         self.snake.draw_snake()
 
@@ -140,6 +139,14 @@ class MAIN:
     def game_over(self):
         pygame.quit()
         sys.exit()
+
+    def draw_grass(self):
+        grass_color = (167, 209,61)
+        for row in range(cell_number):
+            for col in range(cell_number):
+                if (row + col) % 2 == 0:
+                    grass_rect = pygame.Rect(col * cell_size, row * cell_size, cell_size, cell_size)
+                    pygame.draw.rect(screen, grass_color, grass_rect)
 
 
 cell_size = 40
