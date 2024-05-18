@@ -3,6 +3,7 @@ from pygame import Vector2
 
 pygame.init()  # pygame start
 
+#this is before working on trap feature.
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
