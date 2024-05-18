@@ -3,60 +3,66 @@ from pygame import Vector2
 
 pygame.init()  # pygame start
 
-#this is a git test for now
-#omar push test
+# This is a git test for now
+# Omar push test
+
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = Vector2(1, 0)
         self.new_block = False
 
-        self.head_up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headUp.png').convert_alpha()
-        self.head_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headDown1.png').convert_alpha()
-        self.head_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headRight.png').convert_alpha()
-        self.head_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headLeft.png').convert_alpha()
+        self.head_up = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/head_up.png').convert_alpha()
+        self.head_down = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/head_down.png').convert_alpha()
+        self.head_right = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/head_right.png').convert_alpha()
+        self.head_left = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/head_left.png').convert_alpha()
 
-        self.head__up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headUp.png'). convert_alpha()
-        self.head_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headDown.png').convert_alpha()
-        self.head_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headRight.png'). convert_alpha()
-        self.head_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/headLeft.png'). convert_alpha()
+        self.tail_up = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/tail_up.png').convert_alpha()
+        self.tail_down = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/tail_down.png').convert_alpha()
+        self.tail_right = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/tail_right.png').convert_alpha()
+        self.tail_left = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/tail_left.png').convert_alpha()
 
-        self.tail_up = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailUp.png').convert_alpha()
-        self.tail_down = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailDown.png').convert_alpha()
-        self.tail_right = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailRight.png').convert_alpha()
-        self.tail_left = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/tailLeft.png'). convert_alpha()
+        self.body_vertical = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_vertical.png').convert_alpha()
+        self.body_horizontal = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_horizontal.png').convert_alpha()
 
-        self.body_vertical = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/bodyVer.png').convert_alpha()
-        self.body_horizontal = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/bodyHor.png').convert_alpha()
-
-        self.body_tr = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner1.png').convert_alpha()
-        self.body_tl = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner2.png').convert_alpha()
-        self.body_br = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner3.png').convert_alpha()
-        self.body_bl = pygame.image.load('/Users/omaraldowir/Desktop/snakefinal/corner4.png').convert_alpha()
+        self.body_tr = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_tr.png').convert_alpha()
+        self.body_tl = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_tl.png').convert_alpha()
+        self.body_br = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_br.png').convert_alpha()
+        self.body_bl = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_bl.png').convert_alpha()
 
     def draw_snake(self):
+        self.update_head_graphics()
+        self.update_tail_graphics()
+
         for index, block in enumerate(self.body):
             # 1. We still need a rect for the positioning
             x_pos = int(block.x * cell_size)
             y_pos = int(block.y * cell_size)
             block_rect = pygame.Rect(x_pos, y_pos, cell_size, cell_size)
 
-            # 2. Determine the correct head image based on direction
             if index == 0:
-                if self.direction == Vector2(1, 0):
-                    screen.blit(self.head_right, block_rect)
-                elif self.direction == Vector2(-1, 0):
-                    screen.blit(self.head_left, block_rect)
-                elif self.direction == Vector2(0, 1):
-                    screen.blit(self.head_down, block_rect)
-                elif self.direction == Vector2(0, -1):
-                    screen.blit(self.head_up, block_rect)
+                screen.blit(self.head, block_rect)
+            elif index == len(self.body) - 1:
+                screen.blit(self.tail, block_rect)
             else:
-                # pygame.draw.rect(screen, (150, 100, 100), block_rect)
-                pygame.draw.rect(screen, (74,95,168), block_rect)
+                previous_block = self.body[index + 1] - block
+                next_block = self.body[index - 1] - block
+                if previous_block.x == next_block.x:
+                    screen.blit(self.body_vertical, block_rect)
+                elif previous_block.y == next_block.y:
+                    screen.blit(self.body_horizontal, block_rect)
+                else:
+                    if (previous_block.x == -1 and next_block.y == -1) or (previous_block.y == -1 and next_block.x == -1):
+                        screen.blit(self.body_tl, block_rect)
+                    elif (previous_block.x == -1 and next_block.y == 1) or (previous_block.y == 1 and next_block.x == -1):
+                        screen.blit(self.body_bl, block_rect)
+                    elif (previous_block.x == 1 and next_block.y == -1) or (previous_block.y == -1 and next_block.x == 1):
+                        screen.blit(self.body_tr, block_rect)
+                    elif (previous_block.x == 1 and next_block.y == 1) or (previous_block.y == 1 and next_block.x == 1):
+                        screen.blit(self.body_br, block_rect)
 
     def move_snake(self):
-        if self.new_block == True:
+        if self.new_block:
             body_copy = self.body[:]
             body_copy.insert(0, body_copy[0] + self.direction)
             self.body = body_copy[:]
@@ -65,6 +71,28 @@ class SNAKE:
             body_copy = self.body[:-1]
             body_copy.insert(0, body_copy[0] + self.direction)
             self.body = body_copy[:]
+
+    def update_tail_graphics(self):
+        tail_relation = self.body[-2] - self.body[-1]
+        if tail_relation == Vector2(1, 0):
+            self.tail = self.tail_left
+        elif tail_relation == Vector2(-1, 0):
+            self.tail = self.tail_right
+        elif tail_relation == Vector2(0, 1):
+            self.tail = self.tail_up
+        elif tail_relation == Vector2(0, -1):
+            self.tail = self.tail_down
+
+    def update_head_graphics(self):
+        head_relation = self.body[1] - self.body[0]
+        if head_relation == Vector2(1, 0):
+            self.head = self.head_left
+        elif head_relation == Vector2(-1, 0):
+            self.head = self.head_right
+        elif head_relation == Vector2(0, 1):
+            self.head = self.head_up
+        elif head_relation == Vector2(0, -1):
+            self.head = self.head_down
 
 
 class FRUIT:
@@ -90,7 +118,7 @@ class MAIN:
     def update(self):
         self.snake.move_snake()
         self.check_collision()  # calling the method of checking on the fruit if it is eaten
-        self.check_fail()  # callign a method that tells if the snake hit the wall
+        self.check_fail()  # calling a method that tells if the snake hit the wall
 
     def draw_elements(self):
         self.fruit.draw_fruit()
@@ -106,7 +134,7 @@ class MAIN:
             self.game_over()
 
         for block in self.snake.body[1:]:
-            if block.x == self.snake.body[0].x and block.y == self.snake.body[0].y:
+            if block == self.snake.body[0]:
                 self.game_over()
 
     def game_over(self):
