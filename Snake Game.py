@@ -70,6 +70,10 @@ class SNAKE:
             body_copy.insert(0, body_copy[0] + self.direction)
             self.body = body_copy[:]
 
+    def add_blocks(self, num_blocks):
+        self.new_block = True
+        for _ in range(num_blocks - 1):
+            self.body.append(self.body[-1])
     def update_tail_graphics(self):
         tail_relation = self.body[-2] - self.body[-1]
         if tail_relation == Vector2(1, 0):
@@ -99,6 +103,20 @@ class SNAKE:
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
 
+class Banana:
+    def __init__(self):
+        # self.visible = False
+        self.randomize()
+
+    def draw_banana(self):
+        # if self.visible:
+            banana_rect = pygame.Rect(int(self.pos.x * cell_size), int(self.pos.y * cell_size), cell_size, cell_size)
+            screen.blit(banana_image, banana_rect)
+
+    def randomize(self):
+        self.x = random.randint(0, cell_number - 1)
+        self.y = random.randint(0, cell_number - 1)
+        self.pos = Vector2(self.x, self.y)
 class TRAP:
     def __init__(self):
         self.randomize()
@@ -110,8 +128,6 @@ class TRAP:
         self.y = random.randint(0, cell_number - 1)
         self.pos = Vector2(self.x, self.y)
 
-    def reset_trap(self):
-        self.randomize()
 class WATER:
     def __init__(self):
         self.visible = False
@@ -145,10 +161,12 @@ class MAIN:
         self.snake = SNAKE()
         self.fruit = FRUIT()
         self.water = WATER()
+        self.banana = Banana()
         self.traps = []
         self.score = 0
         self.speed_multiplier = 1.0
         self.water_taken_count = 0
+        self.banana_taken_count = 0
 
     def update(self):
         self.snake.move_snake()
@@ -160,6 +178,7 @@ class MAIN:
         self.fruit.draw_fruit()
         self.snake.draw_snake()
         self.water.draw_water()
+        self.banana.draw_banana()
         for trap in self.traps:
             trap.draw_trap()
         self.draw_score()
@@ -186,13 +205,24 @@ class MAIN:
 
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomize()
-            self.snake.new_block = True
+            self.snake.add_blocks(1)
             self.score += 1
+            self.snake.play_crunch_sound()
+
+        if self.banana.pos == self.snake.body[0]:
+            self.banana.randomize()
+            self.snake.add_blocks(2)
+            self.score += 2
             self.snake.play_crunch_sound()
 
             if self.score % 10 == 0 and self.score != 0 and not self.water.visible:
                 self.water.randomize()
                 self.water.visible = True
+
+            if self.score % 10 ==0 and self.score != 0 and not self.banana.visible:
+                self.banana.randomize()
+                self.banana.visible = True
+
             if (len(self.snake.body) - 3) % 5 == 0:
                 trap = TRAP()
                 while trap.pos in self.snake.body or any(trap.pos == t.pos for t in self.traps):
@@ -237,6 +267,7 @@ screen = pygame.display.set_mode((cell_number * cell_size, cell_size * cell_numb
 apple = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/apple.png').convert_alpha()
 water_image = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/BALL.png').convert_alpha()
 trap_image = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/trap.png').convert_alpha()
+banana_image = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/banana.png').convert_alpha()
 clock = pygame.time.Clock()
 main_game = MAIN()
 
