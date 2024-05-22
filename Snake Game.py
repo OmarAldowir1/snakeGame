@@ -9,7 +9,7 @@ pygame.init()
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
-        self.direction = Vector2(0, 0)
+        self.direction = Vector2(1, 0)
         self.new_block = False
         self.head_up = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/head_up.png').convert_alpha()
         self.head_down = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/head_down.png').convert_alpha()
@@ -98,6 +98,7 @@ class SNAKE:
     def reset(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
+
 class TRAP:
     def __init__(self):
         self.randomize()
@@ -109,7 +110,8 @@ class TRAP:
         self.y = random.randint(0, cell_number - 1)
         self.pos = Vector2(self.x, self.y)
 
-
+    def reset_trap(self):
+        self.randomize()
 class WATER:
     def __init__(self):
         self.visible = False
@@ -219,6 +221,8 @@ class MAIN:
                 self.game_over()
     def game_over(self):
         self.snake.reset()
+        self.traps = []
+
     def draw_grass(self):
         grass_color = (167, 209, 61)
         for row in range(cell_number):
