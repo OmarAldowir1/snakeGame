@@ -5,7 +5,6 @@ from pygame import Vector2
 
 pygame.init()
 
-
 class SNAKE:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
@@ -103,9 +102,10 @@ class SNAKE:
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
 
+
 class Banana:
     def __init__(self):
-        # self.visible = False
+        self.visible = False
         self.randomize()
 
     def draw_banana(self):
@@ -203,17 +203,34 @@ class MAIN:
             if block == self.fruit.pos:
                 self.fruit.randomize()
 
+        if self.banana.pos == self.snake.body[0]:
+            self.score += 2
+            if self.score % 10 == 0 and self.score != 0 and not self.water.visible:
+                self.water.randomize()
+                self.water.visible = True
+
+            if self.score % 10 ==0 and self.score != 0 and not self.banana.visible:
+                self.banana.randomize()
+                self.banana.visible = True
+
+            if (len(self.snake.body) - 3) % 5 == 0:
+                trap = TRAP()
+                while trap.pos in self.snake.body or any(trap.pos == t.pos for t in self.traps):
+                    trap.randomize()
+                self.traps.append(trap)
+
+
+            self.banana.randomize()
+            self.snake.add_blocks(2)
+            self.snake.play_crunch_sound()
+
+
         if self.fruit.pos == self.snake.body[0]:
             self.fruit.randomize()
             self.snake.add_blocks(1)
             self.score += 1
             self.snake.play_crunch_sound()
 
-        if self.banana.pos == self.snake.body[0]:
-            self.banana.randomize()
-            self.snake.add_blocks(2)
-            self.score += 2
-            self.snake.play_crunch_sound()
 
             if self.score % 10 == 0 and self.score != 0 and not self.water.visible:
                 self.water.randomize()
@@ -249,8 +266,10 @@ class MAIN:
         for trap in self.traps:
             if trap.pos == self.snake.body[0]:
                 self.game_over()
+
     def game_over(self):
         self.snake.reset()
+        self.score = 0
         self.traps = []
 
     def draw_grass(self):
@@ -270,7 +289,6 @@ trap_image = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/trap.
 banana_image = pygame.image.load('/Users/YAMAN/Desktop/SnakeProject/Graphics/banana.png').convert_alpha()
 clock = pygame.time.Clock()
 main_game = MAIN()
-
 try:
     game_font = pygame.font.Font('/Users/YAMAN/Desktop/SnakeProject/Fonts/PoetsenOne-Regular.ttf', 25)
 except FileNotFoundError:
