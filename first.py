@@ -31,6 +31,8 @@ class SNAKE:
         self.body_bl = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/body_bl.png').convert_alpha()
         self.crunch_sound = pygame.mixer.Sound('/Users/omaraldowir/Desktop/Graphics/eatingSound.mp3')
 
+        self.crunch_sound = pygame.mixer.Sound('/Users/omaraldowir/Desktop/Graphics/eatingSound.mp3')
+
     def draw_snake(self):
         self.update_head_graphics()
         self.update_tail_graphics()
@@ -73,6 +75,10 @@ class SNAKE:
             body_copy.insert(0, body_copy[0] + self.direction)
             self.body = body_copy[:]
 
+        # Wrap the snake's position around the edges of the screen
+        self.body[0].x = self.body[0].x % cell_number
+        self.body[0].y = self.body[0].y % cell_number
+
     def add_blocks(self, num_blocks):
         self.new_block = True
         for _ in range(num_blocks - 1):
@@ -107,15 +113,15 @@ class SNAKE:
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
 
-
-class Banana:
+# after finishing the game and the project DONE
+class Stra:
     def __init__(self):
         self.visible = False
         self.randomize()
 
-    def draw_banana(self):
-        banana_rect = pygame.Rect(int(self.pos.x * cell_size), int(self.pos.y * cell_size), cell_size, cell_size)
-        screen.blit(banana_image, banana_rect)
+    def draw_stra(self):
+        stra_rect = pygame.Rect(int(self.pos.x * cell_size), int(self.pos.y * cell_size), cell_size, cell_size)
+        screen.blit(stra_image, stra_rect)
 
     def randomize(self):
         self.x = random.randint(0, cell_number - 1)
@@ -153,22 +159,6 @@ class WATER:
         self.pos = Vector2(self.x, self.y)
 
 
-class GHOST:
-    def __init__(self):
-        self.visible = False
-        self.randomize()
-
-    def draw_ghost(self):
-        if self.visible:
-            ghost_rect = pygame.Rect(int(self.pos.x * cell_size), int(self.pos.y * cell_size), cell_size, cell_size)
-            screen.blit(ghost_image, ghost_rect)
-
-    def randomize(self):
-        self.x = random.randint(0, cell_number - 1)
-        self.y = random.randint(0, cell_number - 1)
-        self.pos = Vector2(self.x, self.y)
-
-
 class FRUIT:
     def __init__(self):
         self.randomize()
@@ -188,8 +178,7 @@ class MAIN:
         self.snake = SNAKE()
         self.fruit = FRUIT()
         self.water = WATER()
-        self.ghost = GHOST()
-        self.banana = Banana()
+        self.stra = Stra()
         self.traps = []
         self.score = 0
         self.speed_multiplier = 1.0
@@ -206,8 +195,7 @@ class MAIN:
         self.fruit.draw_fruit()
         self.snake.draw_snake()
         self.water.draw_water()
-        self.ghost.draw_ghost()
-        self.banana.draw_banana()
+        self.stra.draw_stra()
         for trap in self.traps:
             trap.draw_trap()
         self.draw_score()
@@ -236,12 +224,12 @@ class MAIN:
         for block in self.snake.body[1:]:
             if block == self.fruit.pos:
                 self.fruit.randomize()
-            if block == self.banana.pos:
-                self.banana.randomize()
+            if block == self.stra.pos:
+                self.stra.randomize()
 
-        if self.banana.pos == self.snake.body[0]:
+        if self.stra.pos == self.snake.body[0]:
             self.score += 2
-            self.banana.randomize()
+            self.stra.randomize()
             self.snake.add_blocks(2)
             self.snake.play_crunch_sound()
             self.check_special_items()
@@ -261,25 +249,14 @@ class MAIN:
             self.speed_increase_msg_end_time = pygame.time.get_ticks() + 3000  # Show message for 3 seconds
             pygame.time.set_timer(SPEED_RESET_EVENT, 3000)  # Set timer to reset speed after 3 seconds
 
-        if self.ghost.visible and self.ghost.pos == self.snake.body[0]:
-            self.ghost.visible = False
-            self.snake.new_block = True
-            self.show_speed_increase_msg = True
-            self.speed_increase_msg_end_time = pygame.time.get_ticks() + 5000  # Show message for 5 seconds
-            pygame.time.set_timer(SPEED_RESET_EVENT, 5000)  # Set timer to reset speed after 5 seconds
-
     def check_special_items(self):
         if self.score % 10 == 0 and self.score != 0 and not self.water.visible:
             self.water.randomize()
             self.water.visible = True
 
-        if self.score % 20 == 0 and self.score != 0 and not self.ghost.visible:
-            self.ghost.randomize()
-            self.ghost.visible = True
-
-        if self.score % 10 == 0 and self.score != 0 and not self.banana.visible:
-            self.banana.randomize()
-            self.banana.visible = True
+        if self.score % 10 == 0 and self.score != 0 and not self.stra.visible:
+            self.stra.randomize()
+            self.stra.visible = True
 
         if (len(self.snake.body) - 3) % 5 == 0:
             trap = TRAP()
@@ -288,17 +265,7 @@ class MAIN:
             self.traps.append(trap)
 
     def check_fail(self):
-        head = self.snake.body[0]
-        # Wrap around screen edges
-        if head.x >= cell_number:
-            self.snake.body[0].x = 0
-        elif head.x < 0:
-            self.snake.body[0].x = cell_number - 1
-        elif head.y >= cell_number:
-            self.snake.body[0].y = 0
-        elif head.y < 0:
-            self.snake.body[0].y = cell_number - 1
-
+        # Remove the wall collision check as it's handled in move_snake
         for block in self.snake.body[1:]:
             if block == self.snake.body[0]:
                 self.game_over()
@@ -318,17 +285,17 @@ class MAIN:
             for col in range(cell_number):
                 if (row + col) % 2 == 0:
                     grass_rect = pygame.Rect(col * cell_size, row * cell_size, cell_size, cell_size)
-                    pygame.draw.rect(screen, grass_color , grass_rect)
+                    pygame.draw.rect(screen, grass_color, grass_rect)
 
 
 cell_size = 40
 cell_number = 20
 screen = pygame.display.set_mode((cell_number * cell_size, cell_size * cell_number))
 apple = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/apple.png').convert_alpha()
-water_image = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/BALL1.png').convert_alpha()
+water_image = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/BALL.png').convert_alpha()
 trap_image = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/trap.png').convert_alpha()
-banana_image = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/stra.png').convert_alpha()
-ghost_image = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/ghost1.png')
+stra_image = pygame.image.load('/Users/omaraldowir/Desktop/Graphics/stra.png').convert_alpha()
+
 clock = pygame.time.Clock()
 main_game = MAIN()
 try:
@@ -369,5 +336,3 @@ while True:
     main_game.draw_elements()
     pygame.display.update()
     clock.tick(60)  # Keep a consistent frame rate
-
-
